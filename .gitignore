@@ -1,0 +1,23 @@
+# misc OSx
+*~
+.#.*
+*.DS_Store
+
+# xcode
+*.xcworkspace
+
+# ignore large file types
+
+
+# ignore legacy loading screen images & music
+/_legacy_ls_img
+/_legacy_ls_music
+
+
+# ignore legacy loading screen images
+
+
+
+
+
+

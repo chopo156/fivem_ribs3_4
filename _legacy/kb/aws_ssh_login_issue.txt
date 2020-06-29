@@ -1,0 +1,31 @@
+================================
+aws ssh login issue (when creating new server instance)
+
+ref: https://alestic.com/2014/01/ec2-ssh-username/
+ref: https://forums.aws.amazon.com/thread.jspa?messageID=461496#461496
+================================
+================================
+note: 
+- posted the following answer (below) to the following thread
+- thread: https://forums.aws.amazon.com/thread.jspa?messageID=461496#461496
+================================
+
+the problem for me was that i accidentally set up a 'redhat' instance when i actually meant to use 'ubuntu'... 
+
+i think this may have lead to the same problem as the user name being wrong (but i'm not sure) 
+
+i imagine the default user for a new 'redhat' instance is not 'ubuntu' : )
+$ ssh ubuntu@<ipaddr>
+
+however, even using 'root' and 'ec2-user' did not allow me to login either (weird).
+ref: https://alestic.com/2014/01/ec2-ssh-username/
+$ ssh root@<ipaddr>
+$ ssh ec2-user@<ipaddr>
+
+regardless, when i realized i was trying to login to a 'redhat' instance, i simply created a new 'ubuntu' instance instead, and that solved my problem
+
+attached are some default user names (from the referenced link above)
+
+glhf
+
+

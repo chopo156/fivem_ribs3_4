@@ -1,0 +1,86 @@
+#=============================================#
+# HOW-TO_shell_misc.txt
+#
+# by: eric greenhouse 031618
+#=============================================#
+
+#=============================================#
+# check how many rows in csv
+#=============================================#
+$ wc -l final_score_prov_predictions_prod.csv
+ 5677155 final_score_prov_predictions_prod.csv
+ 
+
+#=============================================#
+# scp (push file to local server)
+#=============================================#
+# on local machine: push csv to remote server
+$ sudo scp ./final_score_prov_predictions_prod_<date>.csv <user>@opta-dev-node01.cirrus9.net:/home/<user>/<dir mongo_commercial clone>/final_score_prov_predictions_prod_<date>
+
+#=============================================#
+# check unix version
+#=============================================#
+# preferred 
+$ lsb_release -a
+
+# others...
+$ uname
+$ uname -a
+$ cat /etc/lsb-release
+$ cat /etc/issue.net
+$ cat /etc/*-release
+
+# ?
+$ cat /etc/debian_version 
+$ cat /etc/*_version
+
+
+#=============================================#
+# mongo
+#=============================================#
+#import -j option (help performance
+# ref: https://stackoverflow.com/a/33561043/2298002
+# -j, --numInsertionWorkers= number of insert operations to run concurrently (defaults to 1)
+mongoimport \
+-j 2
+--collection $collection_name \
+--db=opta \
+--file $(dirname $0)/tmp_final_score_prov_predictions_prod.csv \
+--headerline \
+--host $endpoint \
+--type csv
+
+
+
+#=============================================#
+# split up large csv file
+# splits csv into 10k pieces
+#  note: the first piece created has the header line
+# ref: https://eikhart.com/blog/autosplit-csv
+$ split -l 10000 final_score_prov_predictions_prod.csv
+
+#=============================================#
+# ref: https://stackoverflow.com/a/3509352/2298002
+# If you want to change the input file itself without creating a new file you can use -i option to sed to do inplace changes:
+# sed -i 's/\t/,/g' input_file
+#
+#=============================================#
+# HOW-TO convert tab delimited .csv to comma delimited .csv
+# ref: https://stackoverflow.com/questions/5398395/how-can-i-insert-a-tab-character-with-sed-on-os-x
+#=============================================#
+# note: 'g' means global (throughout the entire csv)
+# ref: https://www.tutorialspoint.com/unix/unix-regular-expressions.htm
+# convert from tab delimited csv to comma delimited
+#   $ sed "s/\t/,/g" input_tab.csv > output_cma.csv
+#
+# convert from tab delimited csv to comma delimited (mac OSx)
+#   $ sed "s/<ctr+v><tab>/,/g" input_tab.csv > output_cma.csv
+#   - or - .sh
+#   collection_name="input_tab"
+#   $ sed $'s/\t/,/g' $collection_name.csv > output_cma.csv
+#
+# ref: https://stackoverflow.com/a/3509352/2298002
+# If you want to change the input file itself without creating a new file you can use -i option to sed to do inplace changes:
+# $ sed -i 's/\t/,/g' input_file
+#=============================================#
+

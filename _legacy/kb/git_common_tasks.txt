@@ -1,0 +1,326 @@
+------------------------------------------
+common git tasks
+# rollback
+# stash & delete
+# create repository
+# clone repository
+# commit / push
+# pull
+# diff
+# clean/reset
+# checkout
+# log & status & file history
+# branch & delete branch
+# .gitignore
+
+ref: http://stackoverflow.com/questions/2514270/how-to-check-for-changes-on-remote-origin-git-repository
+ref: http://git-scm.com/book/en/Git-on-the-Server-Getting-Git-on-a-Server
+ref: http://rogerdudler.github.io/git-guide/
+ref: http://gitready.com/beginner/2009/01/16/cleaning-up-untracked-files.html
+ref: http://stackoverflow.com/questions/16606203/force-git-stash-to-overwrite-added-files
+ref: http://stackoverflow.com/a/640467/2298002
+------------------------------------------
+####################################
+# rollback
+####################################
+ref: https://stackoverflow.com/a/4114122
+
+# This will detach your HEAD, that is, leave you with no branch checked out:
+$ git checkout 0d1d7fc32
+
+# to make commits while you're there, make a new branch while you're at it:
+$ git checkout -b old-state 0d1d7fc32
+
+
+## Hard delete unpublished commits ##
+# If, on the other hand, you want to really get rid of everything you've done since then,
+# there are two possibilities. One, if you haven't published any of these commits, 
+# simply reset:
+
+# This will destroy any local modifications.
+# Don't do it if you have uncommitted work you want to keep.
+$ git reset --hard 0d1d7fc32
+
+# Alternatively, if there's work to keep:
+$ git stash
+$ git reset --hard 0d1d7fc32
+$ git stash pop
+# This saves the modifications, then reapplies that patch after resetting.
+# You could get merge conflicts, if you've modified things which were
+# changed since the commit you reset to.
+
+## Undo published commits with new commits ##
+# This will create three separate revert commits:
+git revert a867b4af 25eee4ca 0766c053
+
+# It also takes ranges. This will revert the last two commits:
+git revert HEAD~2..HEAD
+
+# Similarly, you can revert a range of commits using commit hashes:
+git revert a867b4af..0766c053 
+
+# Reverting a merge commit
+git revert -m 1 <merge_commit_sha>
+
+# To get just one, you could use `rebase -i` to squash them afterwards
+# Or, you could do it manually (be sure to do this at top level of the repo)
+# get your index and work tree into the desired state, without changing HEAD:
+git checkout 0d1d7fc32 .
+
+# Then commit. Be sure and write a good message describing what you just did
+git commit
+
+####################################
+### .gitignore
+####################################
+# Put in the file ~/.gitignore:       
+*.pyc
+
+# Run:
+$ git config --global core.excludesfile ~/.gitignore
+
+# ref: http://stackoverflow.com/a/640467/2298002
+
+# remove all .pyc files
+# ref: https://yuji.wordpress.com/2010/10/29/git-remove-all-pyc/
+$ find . -name “*.pyc” -exec git rm -f {} \;
+# Put in the file ~/.gitignore:
+*.pyc
+
+
+####################################
+### branch & delete branch
+## ref: https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging
+####################################
+## Create and Switch to a new branch "hotfix"
+$ git branch hotfix
+$ git checkout hotfix
+
+## Create and Switch to a new branch "hotfix"
+##  short-hand
+$ git checkout -b hotfix
+
+## switch back to master branch
+##  and bring in changes from hotfix branch
+$ git checkout master
+$ git merge hotfix
+
+##set repository onto a branch
+$ git stash
+$ git checkout some-branch
+$ git stash pop
+
+## delete local branch
+# (use -D instead to force deletion without checking merged status)
+$ git branch -d {the_local_branch} 
+$ git branch -D {the_local_branch} 
+
+## delete remote branch
+$ git push origin --delete {the_remote_branch}
+
+
+####################################
+### checkout
+####################################
+## Create and Switch to a new branch
+##  short-hand
+$ git checkout -b {branch_name}
+
+
+#overwrite all current work with stash list
+$ git checkout stash@{0} —- .
+$ git commit
+
+#overwrite specific file current work with stash list
+$ git checkout stash@{0} —- <file path>
+$ git commit
+
+#To checkout a specific version of the current directory:
+$ git checkout <checksum_hash>
+
+#To checkout a specific version of a file:
+$ git checkout <checksum_hash> <file>
+
+
+####################################
+### log & status & file history
+####################################
+## cd into the root of your repository
+$ cd ~/devatp/kb
+
+## print log (commit history)
+$ git log
+
+## show commit log (show head@{#})
+$ git reflog show
+
+## show history of a single file
+# ref: http://stackoverflow.com/a/24456418/2298002
+# ref: http://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html#Detailed-Unified
+#* note: @@ -start,count +start,count @@
+ The original state of the file is represented with -, and the new state is represented with + (they don't mean additions and deletions in the hunk header. start represents the starting line number of each version of the file, and count represents how many lines are included, starting from the start point.
+*#
+$ git log -p <path-to-file>
+
+####################################
+### clean / reset
+####################################
+##reset back to a specific commit
+# first show commit numbers
+$ git reflog show
+
+# then pick one and reset to it
+$ git reset HEAD@{#}
+
+# then (optional) force these changes to the origin repo server
+$ git push origin -f
+
+##throw away everything not stashed since your last commit
+$ git reset —-hard
+
+##delete untracked files (Dry run)
+#displays what would happen
+$ git clean -n -d <path>
+
+#for real
+$ git clean -f -d <path>
+
+
+####################################
+### diff
+####################################
+#see diff of all from origin repo / master branch
+$ git diff origin/master
+
+#see diff of specific file on master vs. origin
+$ git diff <file path/name>
+
+#show ‘whats going on in origin’
+#gives details on update status and commit
+$ git remote show origin
+
+#accept remote changes
+$ git merge origin/master
+
+
+####################################
+### stash & delete
+####################################
+#overwrite all current work with stash list
+$ git checkout stash@{0} —- .
+$ git commit
+
+#overwrite specific file current work with stash list
+$ git checkout stash@{0} —- <file path>
+$ git commit
+
+#show/output files in a specific stash list
+$ git stash show stash@{<num>}
+
+#clear all stash list
+$ git stash clear
+
+#delete ALL current changes in repository (ehh, not so sure about this one)
+$ git checkout .
+
+#stash (locally save) current changes to stash stack in the repository
+#and send repository back to HEAD (last pull)
+$ git stash
+
+#stash changes with message (description)
+$ git stash save “<message>”
+
+#show stash stack list
+$ git stash list
+
+#load latest stash and delete it from stash stack
+$ git stash pop
+
+#load latest stash and DON’T delete it from stash stack
+$ git stash apply
+
+#load selected stash and delete it from stash stack
+$ git stash pop stash@{0}
+
+#load selected stash and DON’T delete it from stash stack
+$ git stash apply stash@{0}
+
+
+####################################
+### create repository
+####################################
+# on git server #
+## cd into dir that you want to hold/create git repositories
+$ cd /opt/git
+
+## create dir for new git repository (end in .git)
+##  and cd into it
+$ mkdir git_test_project.git
+$ cd git_test_project.git
+
+## initialize a bare repository (repository w/o a working directory)
+$ git --bare init
+
+
+####################################
+### commit/push to repository
+####################################
+# on client/remote computer #
+## cd into root dir of source code
+$ cd git_test_project
+
+## initialize/re-initialize an empty git repository
+$ git init
+
+## add this directory contents to repository index
+$ git add .
+## add this dir and record removals
+$ git add —A . 
+
+## view changes staged for commit
+$ git status
+
+## record changes to the repository
+$ git commit -m 'initial commit'
+
+## add a tracked ’remote repository reference’ named ‘origin’ for ‘url’
+$ git remote add origin eric@gitserver:/opt/git/git_test_project.git
+
+## push up the remote ref to the server
+$ git push origin master
+
+# commit everything that has been changed
+$ git commit -a -m ‘commit description’
+$ git remote add origin eric@gitserver:/home/eric/git/git_test_project.git
+$ git push origin master
+
+
+####################################
+### clone existing repository
+####################################
+# on client/remote computer
+## create destination dir to clone into
+$ mkdir git_test_project_clone
+
+## clone git repository into destination dir
+$ git clone eric@gitserver:/home/eric/git/git_test_project.git ./git_test_project_clone
+
+# NOTE: if receive error...
+(gnome-ssh-askpass:51951): Gtk-WARNING **: cannot open display:
+
+# run the following, then try clone again
+$ unset SSH_ASKPASS
+
+####################################
+### pull / update your local
+####################################
+## cd into the root of your repository
+$ cd ~/devatp/kb
+
+## pull down latest changes
+$ git pull
+
+
+
+
+

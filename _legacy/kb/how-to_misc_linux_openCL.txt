@@ -1,0 +1,228 @@
+
+#==================================================#
+Linux CLI command
+#==================================================#
+## CLI app locations (list apps to run)
+$ cd /bin
+$ cd /usr/bin
+$ cd /usr/local/bin
+
+## symbolic link to launch app from anywhere (e.g. hashcat)
+$ sudo ln -s /home/ubuntu/downloads/hashcat-5.1.0/hashcat64.bin /usr/local/bin/hashcat
+
+## misc system info
+$ lsb_release
+$ uname -a
+$ lscpu
+$ head /proc/cpuinfo
+$ lspci
+$ ls /etc/OpenCL/vendors/
+$ ps
+$ clinfo 
+
+## show CPU info
+$ mpstat
+$ mpstat -A
+$ mpstat -I ALL
+$ mpstat -u 0
+$ mpstat -u 1
+$ mpstat -u 2
+$ uptime 
+$ uptime -p
+
+# show process / task activity
+$ top
+$ htop
+
+#=========================================================#
+# Unix job control command list 
+#  ref: https://kb.iu.edu/d/afnw
+#=========================================================#
+# stop foreground jobs
+<ctrl> + z
+
+# list jobs
+$ jobs
+
+# bring job to foreground (n = job num from '$ jobs')
+$ fg %n
+
+#=========================================================#
+# copy small files from ssh remote server to local client #
+# Copy-paste using an encoding such as base64
+#  ref: https://unix.stackexchange.com/a/2869
+#=========================================================#
+
+1a) on remote server 
+$ base64 <myfile
+ 
+1b) then copy output
+
+2a) on local client
+$ base64 -D >myfile
+
+2b) then paste the clipboard contents 
+2c) then hit <Enter>, then <Ctrl+D>
+
+
+
+#==================================================#
+# INSTALL prerequisites 			   #
+#==================================================#
+#ref: https://www.unix-ninja.com/p/Building_a_Password_Cracking_Rig_for_Hashcat_-_Part_II
+$ sudo apt-get update && apt-get upgrade
+$ sudo apt-get install -y build-essential p7zip p7zip-full unrar unzip
+$ sudo apt-get install emacs
+
+#ref: http://blog.nullmode.com/blog/2015/03/22/36-core-aws-john/
+$ sudo apt-get install -y libgmp3-dev p7zip-full
+
+#ref: https://askubuntu.com/a/994263
+$ apt-get install lsb-core
+
+#==================================================#
+# DOWNLOAD / INSTALL Hashcat + mic cmd		   #
+#==================================================#
+#ref: https://hashcat.net/hashcat/
+$ wget https://hashcat.net/files/hashcat-5.1.0.7z
+$ 7za x hashcat-5.1.0.7z 
+
+#misc commands
+$ hashcat -b
+$ hashcat -I
+
+
+#==================================================#
+# DOWNLOAD required openCL Intel processor runtimes#
+# *NOTE: install after NVIDIA runtimes		   #
+#==================================================#
+
+#ref: http://blog.nullmode.com/blog/2015/03/22/36-core-aws-john/
+$ sudo apt-get install -y libgmp3-dev p7zip-full
+
+## required for AWS instances: t2.micro (Intel(R) Xeon Family)
+## required for AWS instances: t2.2xlarge (Intel(R) Broadwell E5-2686v4)
+$ wget http://registrationcenter-download.intel.com/akdlm/irc_nas/vcp/9019/opencl_runtime_16.1.1_x64_ubuntu_6.4.0.25.tgz
+
+## required for AWS t3.2xlarge instances (w/ Intel(R) Skylake processor)
+## required for AWS c5.2xlarge instances (w/ Intel(R) Skylake processor)
+$ wget http://registrationcenter-download.intel.com/akdlm/irc_nas/vcp/13793/l_opencl_p_18.1.0.013.tgz
+
+## required for AWS instance: g3s.xlarge NVIDIA (NVIDIA Tesla M60 GPUs)
+## required for AWS instance: p2.xlarge NVIDIA (NVIDIA Tesla K80 GPUs)
+$ wget http://registrationcenter-download.intel.com/akdlm/irc_nas/vcp/9019/opencl_runtime_16.1.1_x64_ubuntu_6.4.0.25.tgz
+	- OR -
+$ wget http://registrationcenter-download.intel.com/akdlm/irc_nas/vcp/13793/l_opencl_p_18.1.0.013.tgz
+
+#==================================================#
+# DOWNLOAD required NVIDIA GPU drivers	    	   #
+# *NOTE: install before Intel runtimes		   #
+#==================================================#
+
+## required for AWS instance: g3s.xlarge NVIDIA (NVIDIA Tesla M60 GPUs)
+## required for AWS instance: p2.xlarge NVIDIA (NVIDIA Tesla K80 GPUs)
+#ref: https://www.nvidia.com/download/driverResults.aspx/136954/en-us
+$ wget http://us.download.nvidia.com/tesla/396.44/NVIDIA-Linux-x86_64-396.44.run
+
+
+
+#==================================================#
+# INSTALL required openCL Intel processor runtimes #
+# *NOTE: install after NVIDIA runtimes		   #
+#==================================================#
+
+#ref: https://askubuntu.com/a/994263
+$ apt-get install lsb-core
+
+## required for AWS instance: t2.micro (Intel(R) Xeon Family)
+## required for AWS instance: t2.2xlarge (Intel(R) Broadwell E5-2686v4)
+$ sudo tar -xzf opencl_runtime_16.1.1_x64_ubuntu_6.4.0.25.tgz
+$ cd opencl_runtime_16.1.1_x64_ubuntu_6.4.0.25
+$ sudo ./install.sh
+
+
+## required for AWS instance: t3.2xlarge (w/ Intel(R) Skylake processor)
+## required for AWS instance: c5.2xlarge (w/ Intel(R) Skylake processor)
+$ sudo tar -xzf l_opencl_p_18.1.0.013.tgz
+$ cd l_opencl_p_18.1.0.013
+$ sudo ./install.sh
+
+
+## required for AWS instance: g3s.xlarge (Intel(R) Xeon E5-2686 v4)
+## required for AWS instance: p2.xlarge (E5-2686v4)
+$ apt-get install lsb-core
+
+$ sudo tar -xzf opencl_runtime_16.1.1_x64_ubuntu_6.4.0.25.tgz
+$ cd opencl_runtime_16.1.1_x64_ubuntu_6.4.0.25
+	- OR -
+$ sudo tar -xzf l_opencl_p_18.1.0.013.tgz
+$ cd l_opencl_p_18.1.0.013
+
+$ sudo ./install.sh
+
+
+## ??? (not tested) -> use for RedHat instance
+$ tar xf opencl_runtime_16.1.2_x64_rh_6.4.0.37.tgz
+$ cd opencl_runtime_16.1.2_x64_rh_6.4.0.37
+$ sudo ./install_GUI.sh
+
+
+#==================================================#
+# INSTALL required NVIDIA GPU drivers	    	   #
+# *NOTE: install before Intel runtimes		   #
+#==================================================#
+## required for AWS instance: g3s.xlarge NVIDIA Tesla M60 GPUs
+$ sudo bash NVIDIA-Linux-x86_64-396.44.run --no-drm
+
+## required for AWS instance: p2.xlarge NVIDIA Tesla K80 GPUs
+$ sudo bash NVIDIA-Linux-x86_64-396.44.run --no-drm
+
+
+
+#==================================================#
+# ERRORS w/ p2.xlarge NVIDIA Tesla K80 GPUs	   #
+#==================================================#
+
+## received when running w/o --progress-only
+# *NOTE: error not received w/ g3s.xlarge NVIDIA Tesla K80 GPUs
+* Device #1: This hardware has outdated CUDA compute capability (3.7).
+             For modern OpenCL performance, upgrade to hardware that supports
+             CUDA compute capability version 5.0 (Maxwell) or higher.
+
+## received when running w/o --progress-only
+nvmlDeviceGetFanSpeed(): Not Supported
+
+## received when running w/o --progress-only
+Cracking performance lower than expected?        
+
+* Update your OpenCL runtime / driver the right way:
+  https://hashcat.net/faq/wrongdriver
+
+* Create more work items to make use of your parallelization power:
+  https://hashcat.net/faq/morework
+
+
+#==================================================#
+# ERRORS w/ g3s.xlarge NVIDIA Tesla K80 GPUs	   #
+# ERRORS w/ g3.4xlarge NVIDIA Tesla K80 GPUs	   #
+# ERRORS w/ g3.8xlarge NVIDIA Tesla K80 GPUs	   #
+# ERRORS w/ g3.16xlarge NVIDIA Tesla K80 GPUs	   #
+#==================================================#
+
+## received when running w/o --progress-only
+nvmlDeviceGetFanSpeed(): Not Supported
+
+## received when running w/o --progress-only
+Cracking performance lower than expected?        
+
+* Update your OpenCL runtime / driver the right way:
+  https://hashcat.net/faq/wrongdriver
+
+* Create more work items to make use of your parallelization power:
+  https://hashcat.net/faq/morework
+
+#==================================================#
+#==================================================#
+
+
+
