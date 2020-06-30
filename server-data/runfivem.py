@@ -10,12 +10,12 @@ filename = 'runfivem.py'
 print("\n IMPORTs complete:- STARTING -> file '%s' . . . " % filename)
 
 ## run.sh path
-strPath = '/srv/fivem-dm4c/server/run.sh'
+strPath = '/srv/fivem_ribs3_4/server/run.sh'
 
 ## log config
 timenow = '%s' % int(round(time.time()))
 #timenow = datetime.fromtimestamp(int(timenow))
-strLogFile = '/srv/_logs/fivem-dm4c_%s.log' % timenow
+strLogFile = '/srv/_logs/fivem_ribs3_4_%s.log' % timenow
 strLog = '>&1 | tee -a %s' % strLogFile
 
 def runSubprocess(lstArgsRun):
