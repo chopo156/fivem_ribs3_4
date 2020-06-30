@@ -17,6 +17,11 @@
 # ignore legacy loading screen images
 
 
+# ignore fivem server folder & server-data cache folder
+server/
+server-data/cache/
+
+
 
 
 
